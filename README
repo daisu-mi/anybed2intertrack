@@ -1,0 +1,25 @@
+#
+# Usage
+#
+
+(1) Install XML::Pastor
+
+ % perl -MCPAN -e shell
+ > install XML::Pastor
+
+(2) Generate IPTB perl classes
+ % perl xsd.pl
+
+(3) Generate Testbed via Anybed with [ -x ] option
+ % ./configgen  ----  -x 
+
+ Notice: X options outputs AnyBed's assingment log files as "assingment.xml"
+
+(4) Run anybed2intertrack.pl
+ % ./anybed2intertrack.pl -a assingment.xml -o hoge -i eth0
+
+ Notice: Dir "hoge" is automatically generated if you have permission
+
+ Notice: if no dirname was specified, anybed2intertrack.pl outputs
+	 InterTrack config files in "./" directory.
+
