@@ -1,0 +1,1008 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id: InterTrackMessage.xsd,v 1.1 2010/03/25 05:49:43 daisu-mi Exp $ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:simpleType name="sec_type">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="4294967295"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="usec_type">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="999999"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="TimeVal_type">
+		<xs:sequence/>
+		<xs:attribute name="sec" type="sec_type" use="required"/>
+		<xs:attribute name="usec" type="usec_type" use="required"/>
+	</xs:complexType>
+	<xs:element name="MasterSideTime" type="TimeVal_type"/>
+	<xs:element name="SlaveSideTime" type="TimeVal_type"/>
+	<xs:complexType name="TimeDiff_type">
+		<xs:sequence>
+			<xs:element ref="MasterSideTime"/>
+			<xs:element ref="SlaveSideTime"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="TimeStamp" type="TimeVal_type"/>
+	<xs:element name="TimeDiff" type="TimeDiff_type"/>
+	<xs:simpleType name="ASNumber_type">
+		<xs:restriction base="xs:unsignedLong">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="4294967295"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="ASNumber" type="ASNumber_type"/>
+	<xs:element name="Signature" type="xs:string"/>
+	<xs:element name="FQDN" type="xs:string"/>
+	<xs:simpleType name="ipversion_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="6"/>
+			<xs:enumeration value="any"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="version_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="4"/>
+			<xs:enumeration value="6"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="scope_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="global"/>
+			<xs:enumeration value="private"/>
+			<xs:enumeration value="linklocal"/>
+			<xs:enumeration value="sitelocal"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="block_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="global"/>
+			<xs:enumeration value="private"/>
+			<xs:enumeration value="thisnetwork"/>
+			<xs:enumeration value="publicdata"/>
+			<xs:enumeration value="catv"/>
+			<xs:enumeration value="experiment"/>
+			<xs:enumeration value="loopback"/>
+			<xs:enumeration value="reserved"/>
+			<xs:enumeration value="linklocal"/>
+			<xs:enumeration value="test-net"/>
+			<xs:enumeration value="6to4relay"/>
+			<xs:enumeration value="benchmark"/>
+			<xs:enumeration value="sTLA"/>
+			<xs:enumeration value="6to4"/>
+			<xs:enumeration value="6bone"/>
+			<xs:enumeration value="uniquelocal"/>
+			<xs:enumeration value="multicast"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="mask_atype">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="128"/>
+		</xs:restriction>
+		<!-- ##### type ##### -->
+	</xs:simpleType>
+	<xs:complexType name="IPAddress_type">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="version" type="version_atype" use="required"/>
+				<xs:attribute name="block" type="block_atype" use="required"/>
+				<xs:attribute name="mask" type="mask_atype" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:element name="IPAddress" type="IPAddress_type"/>
+	<xs:complexType name="VLAN_type">
+		<xs:sequence/>
+		<xs:attribute name="number" type="VLANNumber_atype" use="required"/>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:element name="VLAN" type="VLAN_type"/>
+	<xs:simpleType name="VLANNumber_atype">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="4095"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="LABEL_type">
+		<xs:sequence/>
+		<xs:attribute name="type" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:element name="LABEL" type="LABEL_type"/>
+	<xs:complexType name="Network_type">
+		<xs:sequence>
+			<xs:element ref="IPAddress" minOccurs="0"/>
+			<xs:element ref="VLAN" minOccurs="0"/>
+			<xs:element ref="LABEL" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Network" type="Network_type"/>
+	<xs:complexType name="CoverArea_type">
+		<xs:sequence/>
+		<xs:attribute name="ipversion" type="ipversion_atype" use="required"/>
+		<xs:attribute name="scope" type="scope_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="CoverArea" type="CoverArea_type"/>
+	<xs:complexType name="CoverAreas_type">
+		<xs:sequence>
+			<xs:element ref="CoverArea" maxOccurs="3"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="CoverAreas" type="CoverAreas_type"/>
+	<xs:element name="Description" type="xs:string"/>
+	<xs:simpleType name="node_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ITM"/>
+			<xs:enumeration value="BTM"/>
+			<xs:enumeration value="DTM"/>
+			<xs:enumeration value="DP"/>
+			<xs:enumeration value="DBFE"/>
+			<xs:enumeration value="TC"/>
+			<xs:enumeration value="NOC"/>
+			<xs:enumeration value="CMD"/>
+			<xs:enumeration value="OTHER"/>
+			<xs:enumeration value="BTS"/>
+			<xs:enumeration value="DTS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ListeningPort_type">
+		<xs:sequence/>
+		<xs:attribute name="type" type="node_atype" use="required"/>
+		<xs:attribute name="portnumber" type="xs:unsignedShort" use="required"/>
+	</xs:complexType>
+	<xs:element name="ListeningPort" type="ListeningPort_type"/>
+	<xs:complexType name="OnePathFilter_type">
+		<xs:sequence>
+			<xs:element ref="ASNumber"/>
+		</xs:sequence>
+		<xs:attribute name="ipversion" type="ipversion_atype" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="AllPathFilter_type">
+		<xs:sequence/>
+		<xs:attribute name="ipversion" type="ipversion_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="Deny" type="OnePathFilter_type"/>
+	<xs:element name="Allow" type="OnePathFilter_type"/>
+	<xs:element name="DenyAll" type="AllPathFilter_type"/>
+	<xs:element name="AllowAll" type="AllPathFilter_type"/>
+	<xs:complexType name="PathFilter_type">
+		<xs:sequence>
+			<xs:element ref="Deny" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Allow" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="DenyAll" minOccurs="0" maxOccurs="1"/>
+			<xs:element ref="AllowAll" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="PathFilter" type="PathFilter_type"/>
+	<xs:complexType name="RateLimit_type">
+		<xs:sequence/>
+		<xs:attribute name="mps" type="xs:unsignedInt" use="required"/>
+	</xs:complexType>
+	<xs:element name="RateLimit" type="RateLimit_type"/>
+	<xs:element name="DeleteTag" type="xs:string"/>
+	<xs:simpleType name="ExportLevel_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="all"/>
+			<xs:enumeration value="inter-as"/>
+			<xs:enumeration value="intra-as"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ExportLevel_type">
+		<xs:sequence>
+			<xs:element ref="DeleteTag" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="level" type="ExportLevel_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="ExportLevel" type="ExportLevel_type"/>
+	<xs:complexType name="FilterRules_type">
+		<xs:sequence>
+			<xs:element ref="PathFilter" minOccurs="0"/>
+			<xs:element ref="RateLimit" minOccurs="0"/>
+			<xs:element ref="ExportLevel" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="FilterRules" type="FilterRules_type"/>
+	<xs:complexType name="ITMID_type">
+		<xs:sequence>
+			<xs:element ref="ASNumber"/>
+			<xs:element ref="CoverArea"/>
+			<xs:element ref="Signature" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ITMID" type="ITMID_type"/>
+	<xs:complexType name="MACAddress_type">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="length" type="MACAddrLen_atype" use="required"/>
+				<xs:attribute name="delimiter" type="delimiter_atype" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="MACAddrLen_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="EUI48"/>
+			<xs:enumeration value="EUI64"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="MACAddress" type="MACAddress_type"/>
+	<xs:simpleType name="NodeID_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OTHER"/>
+			<xs:enumeration value="ITMID"/>
+			<xs:enumeration value="IP"/>
+			<xs:enumeration value="MAC"/>
+			<xs:enumeration value="AddrPair"/>
+			<xs:enumeration value="FQDN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Other" type="xs:string"/>
+	<xs:group name="NodeID_gtype">
+		<xs:choice>
+			<xs:element ref="IPAddress"/>
+			<xs:element ref="FQDN"/>
+			<xs:element ref="ITMID"/>
+			<xs:element ref="MACAddress"/>
+			<xs:element ref="Other"/>
+			<xs:element ref="AddressPair"/>
+		</xs:choice>
+	</xs:group>
+	
+	<xs:complexType name="NodeID_type">
+		<xs:sequence>
+			<xs:group ref="NodeID_gtype"/>
+		</xs:sequence>
+		<xs:attribute name="idtype" type="NodeID_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="NodeID" type="NodeID_type"/>
+	<xs:complexType name="MyID_type">
+		<xs:sequence>
+			<xs:element ref="NodeID" />
+		</xs:sequence>
+		<xs:attribute name="ipversion" type="ipversion_atype" use="required"/>
+		<xs:attribute name="scope" type="scope_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="MyID" type="MyID_type"/>
+	<xs:complexType name="MyIDs_type">
+		<xs:sequence>
+			<xs:element ref="MyID" minOccurs="1" maxOccurs="5"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="MyIDs" type="MyIDs_type"/>
+	<xs:complexType name="MyStatus_type">
+		<xs:sequence>
+			<xs:element ref="ASNumber"/>
+			<xs:element ref="CoverAreas"/>
+			<xs:element ref="ListeningPort" minOccurs="0" maxOccurs="5"/>
+			<xs:element ref="FilterRules" minOccurs="0"/>
+			<xs:element ref="Signature" minOccurs="0"/>
+			<xs:element ref="Description" minOccurs="0"/>
+			<xs:element ref="MyIDs" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="node" type="node_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="MyStatus" type="MyStatus_type"/>
+	<xs:complexType name="Node_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<xs:element ref="IPAddress"/>
+			<xs:element ref="ListeningPort" minOccurs="0"/>
+			<xs:element ref="Signature" minOccurs="0"/>
+			<xs:element ref="ExportLevel" minOccurs="0"/>
+			<xs:element ref="Description" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="nodetype" type="node_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="Node" type="Node_type"/>
+	<xs:complexType name="Nodes_type">
+		<xs:sequence>
+			<xs:element ref="Node" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Nodes" type="Nodes_type"/>
+	<xs:complexType name="NeighborNode_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<xs:element ref="Signature" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- variations of NeighborNode_type -->
+	<xs:element name="Master" type="NeighborNode_type"/>
+	<xs:element name="Slave" type="NeighborNode_type"/>
+	<xs:element name="SourceNode" type="NeighborNode_type"/>
+	<xs:element name="DestinationNode" type="NeighborNode_type"/>
+	<xs:element name="Origin" type="NeighborNode_type"/>
+	<xs:complexType name="NextHop_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<xs:element ref="Signature" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="depth" type="ASHopDepth_atype" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="ASHopDepth_atype">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="64"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AgentHopDepth_atype">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="255"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="NextHop" type="NextHop_type"/>
+	<xs:element name="ErrorMessage" type="xs:string"/>
+	<xs:complexType name="ErrorCode_type">
+		<xs:sequence>
+			<xs:element ref="TimeDiff" minOccurs="0"/>
+			<xs:element ref="ErrorMessage" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="errortype" type="error_atype" use="required"/>
+	</xs:complexType>
+	<xs:simpleType name="error_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="HB_UNKNOWN_ERROR"/>
+			<xs:enumeration value="HB_WRONG_SEMANTIC"/>
+			<xs:enumeration value="HB_OVER_THRESHOLD"/>
+			<xs:enumeration value="HB_TIMEOUT"/>
+			<xs:enumeration value="TB_WAIT_BTM_REPLY"/>
+			<xs:enumeration value="TB_WAIT_DTM_REPLY"/>
+			<xs:enumeration value="TB_WAIT_ITM_REPLY"/>
+			<xs:enumeration value="TB_WAIT_TS_REPLY"/>
+			<xs:enumeration value="TB_REFUSED_AUTH"/>
+			<xs:enumeration value="TB_REFUSED_LIMIT"/>
+			<xs:enumeration value="TB_REFUSED_PATH"/>
+			<xs:enumeration value="TB_BUSY_ITM"/>
+			<xs:enumeration value="TB_BUSY_BTM"/>
+			<xs:enumeration value="TB_BUSY_DTM"/>
+			<xs:enumeration value="TB_BUSY_TS"/>
+			<xs:enumeration value="TB_UNKNOWN_ERROR"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="ErrorCode" type="ErrorCode_type"/>
+	<xs:element name="TTL" type="ASHopDepth_atype"/>
+	<xs:simpleType name="encode_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="base64binary"/>
+			<xs:enumeration value="hexstring"/>
+			<xs:enumeration value="md5"/>
+			<xs:enumeration value="sha1"/>
+			<xs:enumeration value="sha-256"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="header_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ip"/>
+			<xs:enumeration value="ethernet"/>
+			<xs:enumeration value="vlan"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="PacketDump_type">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="encodetype" type="encode_atype" use="required"/>
+				<xs:attribute name="header" type="header_atype" use="required"/>
+				<xs:attribute name="iftype" type="xs:unsignedShort" use="required"/>
+				<xs:attribute name="PayloadLength" type="xs:unsignedInt" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:element name="PacketDump" type="PacketDump_type"/>
+	<xs:complexType name="PayloadHash_type">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="encodetype" type="encode_atype" use="required"/>
+				<xs:attribute name="PayloadLength" type="xs:unsignedInt" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:element name="PayloadHash" type="PayloadHash_type"/>
+	<xs:simpleType name="delimiter_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="dot"/>
+			<xs:enumeration value="colon"/>
+			<xs:enumeration value="space"/>
+			<xs:enumeration value="hyphen"/>
+			<xs:enumeration value="none"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Option_type">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:element name="Option" type="Option_type"/>
+	<xs:complexType name="Options_type">
+		<xs:sequence>
+			<xs:element ref="Option" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Options" type="Options_type"/>
+	<xs:complexType name="AddressPair_type">
+		<xs:sequence>
+			<xs:element ref="IPAddress"/>
+			<xs:element ref="MACAddress"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AddressPair" type="AddressPair_type"/>
+	<xs:simpleType name="Border_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="V4ToV6"/>
+			<xs:enumeration value="V6ToV4"/>
+			<xs:enumeration value="V4PrivateToV4Global"/>
+			<xs:enumeration value="V4GlobalToV4Private"/>
+			<xs:enumeration value="V4VPNInternalToExternal"/>
+			<xs:enumeration value="V4VPNExternalToInternal"/>
+			<xs:enumeration value="V6VPNInternalToExternal"/>
+			<xs:enumeration value="V6VPNExternalToInternal"/>
+			<xs:enumeration value="V4Reflection"/>
+			<xs:enumeration value="V6Reflection"/>
+			<xs:enumeration value="ApplicationLayerProxy"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="Border" type="Border_atype"/>
+	<xs:complexType name="TranslateInfo_type">
+		<xs:sequence>
+			<xs:element ref="ASNumber"/>
+			<xs:element ref="PacketDump" minOccurs="0"/>
+			<xs:element ref="PayloadHash" minOccurs="0"/>
+			<xs:element ref="Border"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="TranslateInfo" type="TranslateInfo_type"/>
+	<xs:complexType name="Footmark_type">
+		<xs:sequence>
+			<xs:element ref="PacketDump"/>
+			<xs:element ref="TimeStamp"/>
+			<xs:element ref="TranslateInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Footmark" type="Footmark_type"/>
+	<xs:complexType name="BulkFootmark_type">
+		<xs:sequence>
+			<xs:element ref="Footmark" maxOccurs="unbounded"/>
+			<xs:element ref="TimeStamp"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="BulkFootmark" type="BulkFootmark_type"/>
+	<xs:complexType name="AppFootmark_type">
+		<xs:sequence>
+			<xs:element ref="PayloadHash"/>
+			<xs:element ref="TimeStamp"/>
+			<xs:element ref="TranslateInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AppFootmark" type="AppFootmark_type"/>
+	<xs:group name="Footmark_gtype">
+		<xs:choice>
+			<xs:element ref="Footmark"/>
+			<xs:element ref="BulkFootmark"/>
+			<xs:element ref="AppFootmark"/>	
+		</xs:choice>
+	</xs:group>	
+	<xs:simpleType name="Footmark_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Footmark"/>
+			<xs:enumeration value="BulkFootmark"/>
+			<xs:enumeration value="AppFootmark"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="TemporarySequenceNumber" type="TimeVal_type"/>
+	<xs:complexType name="ITMPathList_type">
+		<xs:sequence>
+			<xs:element ref="Origin" minOccurs="0"/>
+			<xs:element ref="NextHop" minOccurs="0" maxOccurs="128"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ITMPathList" type="ITMPathList_type"/>
+	<!-- SubElement in BorderTraceResult and InterASTraceResult -->
+	<xs:simpleType name="ASStatus_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Destination"/>
+			<xs:enumeration value="Source"/>
+			<xs:enumeration value="Transit"/>
+			<xs:enumeration value="Internal"/>
+			<xs:enumeration value="Amplifier"/>
+			<xs:enumeration value="Translator"/>
+			<xs:enumeration value="NATTraversal"/>
+			<xs:enumeration value="NotFound"/>
+			<xs:enumeration value="Unknown"/>
+			<xs:enumeration value="Refused"/>
+			<xs:enumeration value="Busy"/>
+			<xs:enumeration value="Wait"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="ASStatus_type">
+		<xs:sequence/>
+		<xs:attribute name="type" type="ASStatus_atype" use="required"/>
+		<!-- type name-->
+	</xs:complexType>
+	<xs:element name="ASStatus" type="ASStatus_type"/>
+	<xs:simpleType name="state_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="found"/>
+			<xs:enumeration value="notfound"/>
+			<xs:enumeration value="error"/>
+			<xs:enumeration value="reached"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="degree_atype">
+		<xs:restriction base="xs:unsignedInt">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="NeighborAS_type">
+		<xs:sequence>
+			<xs:element ref="ASNumber"/>
+			<xs:element ref="TranslateInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="ipversion" type="ipversion_atype" use="required"/>
+		<xs:attribute name="scope" type="scope_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="NeighborAS" type="NeighborAS_type"/>
+	<xs:complexType name="AS_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<xs:element ref="ASStatus"/>
+			<xs:element ref="AdministratorInfo" minOccurs="0"/>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element ref="Incomings" minOccurs="0"/>
+					<xs:element ref="Outgoings" minOccurs="0"/>
+					<xs:element ref="AskDTM" minOccurs="0" maxOccurs="1"/>
+					<xs:element ref="Translated" minOccurs="0" maxOccurs="1"/>
+					<xs:element ref="TranslateInfo" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:element ref="ErrorCode"/>
+			</xs:choice>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="depth" type="ASHopDepth_atype" use="required"/>
+		<xs:attribute name="degree" type="degree_atype" use="required"/>
+		<xs:attribute name="state" type="state_atype" use="required"/>
+		<xs:attribute name="tstype" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="AS" type="AS_type"/>
+	<xs:complexType name="AskDTM_type">
+		<xs:sequence/>
+	</xs:complexType>
+	<xs:element name="AskDTM" type="AskDTM_type"/>
+	<xs:complexType name="Translated_type">
+		<xs:sequence/>
+	</xs:complexType>
+	<xs:element name="Translated" type="Translated_type"/>
+	<xs:complexType name="NeighborASes_type">
+		<xs:sequence>
+			<xs:element ref="NeighborAS" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Incomings" type="NeighborASes_type"/>
+	<xs:element name="Outgoings" type="NeighborASes_type"/>
+	<!-- SubElement in IntraASTraceResult -->
+	<xs:element name="LearnedInterface" type="xs:string"/>
+	<xs:element name="Location" type="xs:string"/>
+	<xs:complexType name="SuspectedNode_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<xs:element ref="LearnedInterface" minOccurs="0"/>
+			<xs:element ref="Location" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SuspectedNode" type="SuspectedNode_type"/>
+	<xs:element name="AdministratorName" type="xs:string"/>
+	<xs:element name="Affiliation" type="xs:string"/>
+	<xs:element name="AccountName" type="xs:string"/>
+	<xs:element name="Address" type="xs:string"/>
+	<xs:element name="Email" type="xs:string"/>
+	<xs:element name="PhoneNumber" type="xs:string"/>
+	<xs:element name="FaxNumber" type="xs:string"/>
+	<xs:complexType name="AdministratorInfo_type">
+		<xs:sequence>
+			<xs:element ref="AdministratorName" minOccurs="0"/>
+			<xs:element ref="Affiliation" minOccurs="0"/>
+			<xs:element ref="AccountName" minOccurs="0"/>
+			<xs:element ref="Address" minOccurs="0"/>
+			<xs:element ref="Email" minOccurs="0"/>
+			<xs:element ref="PhoneNumber" minOccurs="0"/>
+			<xs:element ref="FaxNumber" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AdministratorInfo" type="AdministratorInfo_type"/>
+	<xs:complexType name="NeighborAgent_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="NeighborAgent" type="NeighborAgent_type"/>
+	<xs:complexType name="SubAgent_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<xs:element ref="NeighborAgent" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="SuspectedNode" minOccurs="0"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="depth" type="AgentHopDepth_atype" use="required"/>
+		<xs:attribute name="state" type="state_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="SubAgent" type="SubAgent_type"/>
+	<xs:complexType name="AgentReply_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<!-- need case study -->
+			<xs:element ref="SubAgent" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="ErrorCode" minOccurs="0"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="state" type="state_atype" use="required"/>
+		<xs:attribute name="tstype" type="xs:string"/>
+		<xs:attribute name="layer" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="AgentReply" type="AgentReply_type"/>
+	<xs:complexType name="SubDomain_type">
+		<xs:sequence>
+			<xs:element ref="Network"/>
+			<xs:element ref="AgentReply" minOccurs="0"/>
+			<xs:element ref="AdministratorInfo" minOccurs="0"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SubDomain" type="SubDomain_type"/>
+	<!-- Trace Result -->
+	<xs:complexType name="BorderTraceResult_type">
+		<xs:sequence>
+			<xs:element ref="ASStatus"/>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element ref="Incomings" minOccurs="0"/>
+					<xs:element ref="Outgoings" minOccurs="0"/>
+					<xs:element ref="AskDTM" minOccurs="0" maxOccurs="1"/>
+					<xs:element ref="TranslateInfo" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:element ref="ErrorCode"/>
+			</xs:choice>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="degree" type="degree_atype" use="required"/>
+		<xs:attribute name="state" type="state_atype" use="required"/>
+		<xs:attribute name="tstype" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="BorderTraceResult" type="BorderTraceResult_type"/>
+	<xs:complexType name="InterASTraceResult_type">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element ref="AS" maxOccurs="unbounded"/>
+				<xs:element ref="ErrorCode"/>
+			</xs:choice>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="degree" type="degree_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="InterASTraceResult" type="InterASTraceResult_type"/>
+	<xs:complexType name="IntraASTraceResult_type">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element ref="SubDomain" maxOccurs="unbounded"/>
+				<xs:element ref="ErrorCode"/>
+			</xs:choice>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="degree" type="degree_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="IntraASTraceResult" type="IntraASTraceResult_type"/>
+	<!-- Message ID -->
+	<xs:element name="SequenceNumber" type="TimeVal_type"/>
+	<xs:complexType name="MessageID_type">
+		<xs:sequence>
+			<xs:element ref="Origin"/>
+			<xs:element ref="SequenceNumber"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="MessageID" type="MessageID_type"/>
+	<xs:complexType name="SourceClient_type">
+		<xs:sequence>
+			<xs:element ref="NodeID"/>
+			<xs:element ref="Signature" minOccurs="0"/>
+			<xs:element ref="TemporarySequenceNumber"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="SourceClient" type="SourceClient_type"/>
+	<!-- InterTrack Messages -->
+	<!-- Config Message -->
+	<xs:complexType name="Config_type">
+		<xs:sequence>
+			<xs:element ref="MyStatus"/>
+			<xs:element ref="Nodes"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Config" type="Config_type"/>
+	<!-- Heartbeat Messages -->
+	<xs:complexType name="HeartbeatRequest_type">
+		<xs:sequence>
+			<xs:element ref="Master"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="HeartbeatRequest" type="HeartbeatRequest_type"/>
+	<xs:complexType name="HeartbeatReply_type">
+		<xs:sequence>
+			<xs:element ref="Master"/>
+			<xs:element ref="Slave"/>
+			<xs:element ref="TimeStamp"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="HeartbeatReply" type="HeartbeatReply_type"/>
+	<xs:complexType name="HeartbeatError_type">
+		<xs:sequence>
+			<xs:element ref="Master"/>
+			<xs:element ref="Slave"/>
+			<xs:element ref="ErrorCode"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="HeartbeatError" type="HeartbeatError_type"/>
+	<!-- Traceback Messages -->
+	<xs:complexType name="ITMTraceRequest_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="TTL"/>
+			<xs:element ref="ITMPathList"/>
+			<xs:element ref="Translated" minOccurs="0"/>
+			<xs:group ref="Footmark_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Footmark_type" type="Footmark_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="ITMTraceRequest" type="ITMTraceRequest_type"/>
+	<xs:complexType name="ITMTraceReply_type">
+		<xs:sequence>
+			<xs:element ref="SourceNode"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="Translated" minOccurs="0"/>
+			<xs:element ref="InterASTraceResult"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ITMTraceReply" type="ITMTraceReply_type"/>
+	<xs:complexType name="BTMTraceRequest_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="Translated" minOccurs="0"/>
+			<xs:group ref="Footmark_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Footmark_type" type="Footmark_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="BTMTraceRequest" type="BTMTraceRequest_type"/>
+	<xs:complexType name="BTMTraceReply_type">
+		<xs:sequence>
+			<xs:element ref="SourceNode"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="Translated" minOccurs="0"/>
+			<xs:element ref="BorderTraceResult"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="BTMTraceReply" type="BTMTraceReply_type"/>
+	<xs:complexType name="DTMTraceRequest_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="Translated" minOccurs="0"/>
+			<xs:group ref="Footmark_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Footmark_type" type="Footmark_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="DTMTraceRequest" type="DTMTraceRequest_type"/>
+	<xs:complexType name="DTMTraceReply_type">
+		<xs:sequence>
+			<xs:element ref="SourceNode"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="Translated" minOccurs="0"/>
+			<xs:element ref="IntraASTraceResult"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="DTMTraceReply" type="DTMTraceReply_type"/>
+	<!-- Export Result -->
+	<xs:complexType name="AllResultExport_type">
+		<xs:sequence>
+			<xs:element ref="ITMTraceRequest"/>
+			<xs:element ref="BTMTraceRequest" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="BTMTraceReply" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="ITMTraceReply"/>
+			<xs:element ref="DTMTraceRequest" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="DTMTraceReply" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="AllResultExport" type="AllResultExport_type"/>
+	<xs:complexType name="InterASResultExport_type">
+		<xs:sequence>
+			<xs:element ref="ITMTraceRequest"/>
+			<xs:element ref="ITMTraceReply"/>
+			<xs:element ref="BTMTraceRequest" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="BTMTraceReply" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="InterASResultExport" type="InterASResultExport_type"/>
+	<xs:complexType name="IntraASResultExport_type">
+		<xs:sequence>
+			<xs:element ref="ITMTraceRequest"/>
+			<xs:element ref="BTMTraceRequest" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="BTMTraceReply" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="DTMTraceRequest" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="DTMTraceReply" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="IntraASResultExport" type="IntraASResultExport_type"/>
+	<xs:group name="Export_gtype">
+		<xs:choice>
+			<xs:element ref="AllResultExport"/>
+			<xs:element ref="InterASResultExport"/>
+			<xs:element ref="IntraASResultExport"/>
+		</xs:choice>
+	</xs:group>
+	<xs:simpleType name="Export_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AllResultExport"/>
+			<xs:enumeration value="InterASResultExport"/>
+			<xs:enumeration value="IntraASResultExport"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- DP and TC -->
+	<xs:complexType name="ClientTraceRequest_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="SourceNode"/>
+			<xs:element ref="TemporarySequenceNumber"/>
+			<xs:element ref="TTL"/>
+			<xs:choice>
+				<xs:element ref="PacketDump" maxOccurs="unbounded"/>
+				<xs:element ref="PayloadHash"/>
+			</xs:choice>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ClientTraceRequest" type="ClientTraceRequest_type"/>
+	<xs:complexType name="DPointTraceRequest_type">
+		<xs:sequence>
+			<xs:element ref="SourceNode"/>
+			<xs:element ref="SourceClient"/>
+			<xs:element ref="TTL"/>
+			<xs:group ref="Footmark_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Footmark_type" type="Footmark_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="DPointTraceRequest" type="DPointTraceRequest_type"/>
+	<xs:complexType name="DPointMessageIDReply_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="SourceClient"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="DPointMessageIDReply" type="DPointMessageIDReply_type"/>
+	<xs:complexType name="ClientMessageIDReply_type">
+		<xs:sequence>
+			<xs:element ref="SourceNode"/>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="TemporarySequenceNumber"/>
+			<xs:element ref="MessageID"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="ClientMessageIDReply" type="ClientMessageIDReply_type"/>
+	<xs:complexType name="DPointTraceReply_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="SourceClient"/>
+			<xs:element ref="MessageID"/>
+			<!--<xs:element ref="AllResultExport"/>-->
+			<xs:group ref="Export_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Export_type" type="Export_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="DPointTraceReply" type="DPointTraceReply_type"/>
+	<xs:complexType name="ClientTraceReply_type">
+		<xs:sequence>
+			<xs:element ref="SourceNode"/>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="MessageID"/>
+			<xs:group ref="Export_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Export_type" type="Export_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="ClientTraceReply" type="ClientTraceReply_type"/>
+	<!-- Export Messages -->
+	<xs:complexType name="ITMTraceResultExport_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="MessageID"/>
+			<!--<xs:element ref="AllResultExport"/>-->
+			<xs:group ref="Export_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Export_type" type="Export_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="ITMTraceResultExport" type="ITMTraceResultExport_type"/>
+	<xs:complexType name="TraceResultExport_type">
+		<xs:sequence>
+			<xs:element ref="DestinationNode"/>
+			<xs:element ref="SourceNode"/>
+			<xs:group ref="Export_gtype"/>
+			<xs:element ref="Options" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Export_type" type="Export_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="TraceResultExport" type="TraceResultExport_type"/>
+	<!-- InterTrack Messages -->
+	<xs:group name="InterTrackMessage_gtype">
+		<xs:choice>
+			<xs:element ref="Config"/>
+			<xs:element ref="HeartbeatError"/>
+			<xs:element ref="HeartbeatRequest"/>
+			<xs:element ref="HeartbeatReply"/>
+			<xs:element ref="ClientTraceRequest"/>
+			<xs:element ref="ClientMessageIDReply"/>
+			<xs:element ref="ClientTraceReply"/>
+			<xs:element ref="DPointTraceRequest"/>
+			<xs:element ref="DPointMessageIDReply"/>
+			<xs:element ref="DPointTraceReply"/>
+			<xs:element ref="ITMTraceRequest"/>
+			<xs:element ref="ITMTraceReply"/>
+			<xs:element ref="BTMTraceRequest"/>
+			<xs:element ref="BTMTraceReply"/>
+			<xs:element ref="DTMTraceRequest"/>
+			<xs:element ref="DTMTraceReply"/>
+			<xs:element ref="ITMTraceResultExport"/>
+			<xs:element ref="TraceResultExport"/>
+			
+		</xs:choice>
+	</xs:group>
+	<xs:simpleType name="Message_atype">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Config"/>
+			<xs:enumeration value="HeartbeatRequest"/>
+			<xs:enumeration value="HeartbeatReply"/>
+			<xs:enumeration value="HeartbeatError"/>
+			<xs:enumeration value="ITMTraceRequest"/>
+			<xs:enumeration value="ITMTraceReply"/>
+			<xs:enumeration value="BTMTraceRequest"/>
+			<xs:enumeration value="BTMTraceReply"/>
+			<xs:enumeration value="DTMTraceRequest"/>
+			<xs:enumeration value="DTMTraceReply"/>
+			<xs:enumeration value="DPointTraceRequest"/>
+			<xs:enumeration value="DPointMessageIDReply"/>
+			<xs:enumeration value="DPointTraceReply"/>
+			<xs:enumeration value="ClientTraceRequest"/>
+			<xs:enumeration value="ClientMessageIDReply"/>
+			<xs:enumeration value="ClientTraceReply"/>
+			<xs:enumeration value="ITMTraceResultExport"/>
+			<xs:enumeration value="TraceResultExport"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="InterTrackMessage_type">
+		<xs:sequence>
+			<xs:group ref="InterTrackMessage_gtype" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="type" type="Message_atype" use="required"/>
+	</xs:complexType>
+	<xs:element name="InterTrackMessage" type="InterTrackMessage_type"/>
+</xs:schema>
